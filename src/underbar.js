@@ -377,7 +377,7 @@
     var random = [];
     var result = array.slice();
     while (result.length > 0) {
-      var randomIndex = Math.floor(Math.random() * array.length);
+      var randomIndex = Math.floor(Math.random() * result.length);
       random.push(result[randomIndex]);
       result.splice(randomIndex, 1);
     }
