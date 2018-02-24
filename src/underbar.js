@@ -429,6 +429,21 @@
   // Example:
   // _.zip(['a','b','c','d'], [1,2,3]) returns [['a',1], ['b',2], ['c',3], ['d',undefined]]
   _.zip = function () {
+    var args = [...arguments];
+
+    var standard = _.reduce(args, function (arg, acc) {
+      return arg.length > acc.length ? arg : acc;
+    }, args[0]);
+
+    var output = [];
+    for (var i = 0; i < args.length; i++) {
+      var arr = [];
+      for (var j = 0; j < standard.length; j++) {
+        arr.push(args[j][i]);
+      }
+      output.push(arr);
+    }
+    return output;
   };
 
   // Takes a multidimensional array and converts it to a one-dimensional array.
@@ -451,11 +466,31 @@
   // Takes an arbitrary number of arrays and produces an array that contains
   // every item shared between all the passed-in arrays.
   _.intersection = function () {
+    var args = [...arguments];
+
+    var standard = _.reduce(args, function (arg, acc) {
+      return arg.length > acc.length ? arg : acc;
+    }, args[0]);
+
+    var output = [];
+    for (var i = 0; i < args.length - 1; i++) {
+      for (var j = 0; j < standard.length; j++) {
+        if (args[i][j] === args[i + 1][j]) { output.push(args[i][j]); }
+      }
+    }
+    return output;
   };
 
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function (array) {
+    var args = [...arguments].slice(1);
+
+    var flattened = _.flatten(args);
+
+    return _.filter(array, function (item) {
+      return !_.contains(flattened, item);
+    });
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
@@ -464,5 +499,19 @@
   //
   // Note: This is difficult! It may take a while to implement.
   _.throttle = function (func, wait) {
+    var throttling;
+
+    return function () {
+      var args = arguments;
+      if (!throttling) {
+        func.apply(this, args);
+        throttling = true;
+        setTimeout(function () {
+          throttling = false;
+        }, wait);
+      }
+    };
+
   };
+  
 }());
